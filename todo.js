@@ -1,15 +1,25 @@
-// writing an assertion library
+// writing a testing framework
 /*
 
-Now let's implement our own assertion library.
-Create a function called `expect` that accepts an "actual"
-and returns an object of assertions.
+Let's improve our error messages a bit, create a function
+called `test` which can be given a title and a callback.
 
-Tip: I want to be able to use it like so:
+Then add a try/catch so you can log the title with
+a note of success or error.
 
-> expect(actual).toBe(expected)
+Then wrap each of your tests in a `test` function.
 
-Then run this code with `node 2.todo`
+This also means that we can run all the tests even
+if one of them fails!
+
+Example of test function
+test(title, () => {
+  // arrange
+  // act
+  // assert
+}
+
+Then run this code with `node 3.todo`
 
 > Make sure you're in the right directory!
 
@@ -21,14 +31,15 @@ let result, expected
 
 result = sum(3, 7)
 expected = 10
-expect(result).toBe(expected);
+expect(result).toBe(expected)
 
 result = subtract(7, 3)
-expect(result).toBe(expected);
+expected = 4
+expect(result).toBe(expected)
 
 function expect(actual) {
   return {
-    toBe: function(expected) {
+    toBe(expected) {
       if (actual !== expected) {
         throw new Error(`${actual} is not equal to ${expected}`)
       }
