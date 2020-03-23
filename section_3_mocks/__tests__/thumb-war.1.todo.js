@@ -10,14 +10,13 @@ import * as utils from '../utils'
 // )
 //
 // (Hint #1)
-jest.mock(
-  '../utils',
-  () => {
-    return {
-      getWinner: jest.fn((p1, p2) => p2)
-    }
+jest.mock('../utils', () => {
+  const actualUtils = require.requireActual('../utils')
+  return {
+    ...actualUtils,
+    getWinner: jest.fn((p1, p2) => p2)
   }
-);
+});
 
 test('returns winner', () => {
   const winner = thumbWar('Ken Wheeler', 'Kent C. Dodds');
