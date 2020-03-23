@@ -1,6 +1,23 @@
 import { isPasswordAllowed, userToJSON } from "../auth";
 
 // TODO: refactor
+describe("isPasswordAllowed", () => {
+  const allowedPassword = ["sfkl.e903f.s"];
+  const disallowedPassword = ["", "ffffffffff", "8888888888"];
+
+  allowedPassword.forEach(pwd => {
+    it(`"${pwd}" should be allowed`, () => {
+      expect(isPasswordAllowed(pwd)).toBe(true);
+    });
+  });
+
+  disallowedPassword.forEach(pwd => {
+    it(`"${pwd}" should be allowed`, () => {
+      expect(isPasswordAllowed(pwd)).toBe(false);
+    });
+  });
+});
+
 test("isPasswordAllowed only allows some passwords", () => {
   // here's where I'll demo things for you :)
   expect(isPasswordAllowed("")).toBe(false);
