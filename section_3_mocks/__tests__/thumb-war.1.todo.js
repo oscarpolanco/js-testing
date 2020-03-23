@@ -19,6 +19,17 @@ jest.mock('../utils', () => {
 });
 
 test('returns winner', () => {
+  utils.getWinner.mockClear();
+  const winner = thumbWar('Ken Wheeler', 'Kent C. Dodds');
+  expect(winner).toBe('Kent C. Dodds');
+  expect(utils.getWinner).toHaveBeenCalledTimes(2);
+  utils.getWinner.mock.calls.forEach(args => {
+    expect(args).toEqual(['Ken Wheeler', 'Kent C. Dodds'])
+  });
+});
+
+test('returns winner again', () => {
+  utils.getWinner.mockClear();
   const winner = thumbWar('Ken Wheeler', 'Kent C. Dodds');
   expect(winner).toBe('Kent C. Dodds');
   expect(utils.getWinner).toHaveBeenCalledTimes(2);
