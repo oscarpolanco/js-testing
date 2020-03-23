@@ -1,27 +1,35 @@
-// monkey-patching
+// improved assertions for mocks
 import thumbWar from '../thumb-war'
-// import the utils module (see hint #1 at the bottom of the file)
-import * as utils from '../utils';
+import * as utils from '../utils'
 
 test('returns winner', () => {
-  // keep track of the original `getWinner` utility function (see hint #2)
-  // overwrite the utils.getWinner function with
-  // our own that always returns the second player (see hint #3)
-  const originalGetWinner = utils.getWinner;
-  utils.getWinner = (p1, p2) => p2;
+  const originalGetWinner = utils.getWinner
+  // change the getWinner implementation to a function
+  // that keeps track of how often it's called and
+  // the arguments it's called with (Hint #1)
+  utils.getWinner = (...args) => {
+    utils.getWinner.mock.calls.push(args);
+    return args[1];
+  };
+  utils.getWinner.mock = { calls: [] };
 
-  const winner = thumbWar('Ken Wheeler', 'Kent C. Dodds')
-  // change this assertion to be more for a specific player
-  // (like 'Kent C. Dodds', see hint #4):
+  const winner = thumbWar('Ken Wheeler', 'Kent C. Dodds');
   expect(winner).toBe('Kent C. Dodds');
+  // add an assertion for how many times the getWinner function
+  // was supposed to be called (2 times) (Hint #2)
+  //
+  // add another assertion that every time it was called
+  // it was called with the right arguments: 'Ken Wheeler', 'Kent C. Dodds'
+  // (Hint #3)
+  expect(utils.getWinner.mock.calls).toEqual([
+    ['Ken Wheeler', 'Kent C. Dodds'],
+    ['Ken Wheeler', 'Kent C. Dodds']
+  ]);
 
-  // restore the originalGetWinner function so other tests don't break
-  // (see hint #5)
   utils.getWinner = originalGetWinner;
 })
 
 /*
-
 Hints below:
 
 
@@ -29,7 +37,38 @@ Hints below:
 
 
 
-See answers in the solution file
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -67,15 +106,32 @@ See answers in the solution file
 
 Hint #1:
 
-import * as utils from '../utils'
+There's nothing too magical going on here, you just need some place to store the state for every time the function is
+called. Something like this should do just fine (Sorry, this is the solution I have. I couldn't think of a way to hint
+at it without totally giving it away or leading you astray):
+
+utils.getWinner = (...args) => {
+  utils.getWinner.mock.calls.push(args)
+  return args[1]
+}
+utils.getWinner.mock = {calls: []}
+
+
 
 
 
 
 
 Hint #2:
+Depending on how you store the state of how many times it's been called, you might either do this:
 
-const originalGetWinner = utils.getWinner
+expect(timesCalled).toBe(2)
+
+Or you might do this:
+
+expect(utils.getWinner.mock.calls).toHaveLength(2)
+
+Either way is fine.
 
 
 
@@ -84,24 +140,14 @@ const originalGetWinner = utils.getWinner
 
 Hint #3:
 
-utils.getWinner = functionThatAlwaysReturnsPlayer2
+You can have assertions within a forEach and that's not entirely uncommon. Depending on how you're storing the state
+of the arguments its called with you might do this (#spoileralert this is the solution... sorry):
+
+utils.getWinner.mock.calls.forEach(args => {
+  expect(args).toEqual(['Ken Wheeler', 'Kent C. Dodds'])
+})
 
 
 
-
-
-
-Hint #4:
-
-expect(winner).toBe('Kent C. Dodds')
-
-
-
-
-
-
-Hint #5:
-
-utils.getWinner = originalGetWinner
 
  */
