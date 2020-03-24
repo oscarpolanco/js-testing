@@ -42,3 +42,4 @@ On this section we did a couple of example of [mocks](https://en.wikipedia.org/w
 
 For do your mocks you can use the `mock` function from jets like this => `jets.mock('path', function)`. With the `mock` function `Jest` will take control of the module system and node so it will replace the `import` with the function that you send using the `mock`. Remember is good to use the `mockClear` function so the `mock` that you need is not affected by another test.
 
+By defult if you don't specify a function on your `mock`; `jest` will search the function on a directory call `__mocks__`
