@@ -35,3 +35,10 @@ Here an usefull article about [colocation](https://kentcdodds.com/blog/colocatio
 ### How to run the test
 
 Just need be in the root directory of the project on your console and type `npm run test` from there just follow the instructions.
+
+## Section 3: Mocks
+
+On this section we did a couple of example of [mocks](https://en.wikipedia.org/wiki/Mock_object). When your are mocking a module be complete sure that you need it because you are severing your ability to be confident about your code and the test.
+
+For do your mocks you can use the `mock` function from jets like this => `jets.mock('path', function)`. With the `mock` function `Jest` will take control of the module system and node so it will replace the `import` with the function that you send using the `mock`. Remember is good to use the `mockClear` function so the `mock` that you need is not affected by another test.
+
