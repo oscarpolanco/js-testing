@@ -95,3 +95,12 @@ test('deleteUser will 403 if not requested by the user', async () => {
   expect(res.send).toHaveBeenCalledTimes(1);
 });
 
+test('deleteUser will 404 id user does not exist', async () => {
+  const {req, res} = setup();
+  req.params = { id: generate.id };
+  req.user = { id: generate.id() };
+  await usersController.deleteUser(req, res);
+  expect(res.status).toHaveBeenCalledTimes(1);
+  expect(res.status).toHaveBeenCalledWith(404);
+  expect(res.send).toHaveBeenCalledTimes(1);
+});
