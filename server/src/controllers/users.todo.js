@@ -59,7 +59,12 @@ async function deleteUser(req, res) {
   if(!user) {
     return res.status(404).send();
   }
-  return res.status(403).send();
+
+  if(req.user.id !== req.params.id) {
+    return res.status(403).send();
+  }
+  await db.deleteUser(user.id);
+  return res.status(204).send();
 }
 
 export { getUsers, getUser, updateUser, authorize, deleteUser };

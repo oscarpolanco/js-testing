@@ -104,3 +104,16 @@ test('deleteUser will 404 id user does not exist', async () => {
   expect(res.status).toHaveBeenCalledWith(404);
   expect(res.send).toHaveBeenCalledTimes(1);
 });
+
+test('deleteUser will delete the user if properly requested', async () => {
+  const {req, res} = setup();
+  const testUser = await db.insertUser(generate.userData());
+  req.params = { id: testUser.id };
+  req.user = { id: testUser.id };
+  await usersController.deleteUser(req, res);
+  expect(res.status).toHaveBeenCalledTimes(1);
+  expect(res.status).toHaveBeenCalledWith(204);
+  expect(res.send).toHaveBeenCalledTimes(1);
+  const userFromDb = await db.getUser(testUser.id);
+  expect(userFromDb).toBe(undefined);
+});
