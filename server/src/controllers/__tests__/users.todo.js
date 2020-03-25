@@ -3,16 +3,39 @@ import { initDb, generate } from "til-server-test-utils";
 import * as usersController from "../users";
 import db from "../../utils/db";
 
+// this setup is common across controllers, so it may be useful to
+// add this to the utils, but I'll leave it here for you :)
+function setup() {
+  const req = {
+    body: {}
+  };
+  const res = {};
+  Object.assign(res, {
+    status: jest.fn(
+      function status() {
+        return this;
+      }.bind(res)
+    ),
+    json: jest.fn(
+      function json() {
+        return this;
+      }.bind(res)
+    ),
+    send: jest.fn(
+      function send() {
+        return this;
+      }.bind(res)
+    )
+  });
+  return { req, res };
+}
 
 const safeUser = u => omit(u, ["salt", "hash"]);
 
 beforeEach(() => initDb());
 
 test("getUsers returns all users in the database", async () => {
-  const req = {};
-  const res = {
-    json: jest.fn()
-  }
+  const {req, res} = setup();
 
   await usersController.getUsers(req, res);
 
@@ -27,13 +50,8 @@ test("getUsers returns all users in the database", async () => {
 
 test("getUser returns the specific user", async () => {
   const testUser = await db.insertUser(generate.userData());
-  const req = {
-    params: { id: testUser.id }
-  };
-  const res = {
-    json: jest.fn()
-  };
-
+  const {req, res} = setup();
+  req.params = { id: testUser.id };
   await usersController.getUser(req, res);
 
   expect(res.json).toHaveBeenCalledTimes(1);
@@ -48,15 +66,10 @@ test("getUser returns the specific user", async () => {
 test("updateUser updates the user with the given changes", async () => {
   const testUser = await db.insertUser(generate.userData());
   const username = generate.username();
-  const req = {
-    user: { id: testUser.id },
-    params: { id: testUser.id },
-    body: { username }
-  };
-
-  const res = {
-    json: jest.fn()
-  }
+  const {req, res } = setup();
+  req.user = { id: testUser.id };
+  req.params = { id: testUser.id };
+  req.body =  { username };
 
   const updatedUser = { ...testUser, username };
 
