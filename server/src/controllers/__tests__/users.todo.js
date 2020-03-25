@@ -1,6 +1,6 @@
 import { omit } from "lodash";
 import { initDb, generate } from "til-server-test-utils";
-import * as usersController from "../users";
+import * as usersController from "../users.todo";
 import db from "../../utils/db";
 
 // this setup is common across controllers, so it may be useful to
@@ -82,5 +82,16 @@ test("updateUser updates the user with the given changes", async () => {
   expect(user).toEqual(safeUser(updatedUser));
   const userFromDb = await db.getUser(user.id);
   expect(userFromDb).toEqual(updatedUser);
+});
+
+test('deleteUser will 403 if not requested by the user', async () => {
+  const {req, res} = setup();
+  const testUser = await db.insertUser(generate.userData());
+  req.params = { id: testUser.id };
+  req.user = { id: generate.id() };
+  await usersController.deleteUser(req, res);
+  expect(res.status).toHaveBeenCalledTimes(1);
+  expect(res.status).toHaveBeenCalledWith(403);
+  expect(res.send).toHaveBeenCalledTimes(1);
 });
 
